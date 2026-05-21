@@ -1,10 +1,104 @@
 {
-  "variants": {
-    "bottom=false": {
-      "model": "shelfmod:block/iron_scaffold_stable"
+  "multipart": [
+    {
+      "when": {
+        "count_y": "1"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_y_count1"
+      }
     },
-    "bottom=true": {
-      "model": "shelfmod:block/iron_scaffold_unstable"
+    {
+      "when": {
+        "count_x": "1"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_x_count1"
+      }
+    },
+    {
+      "when": {
+        "count_z": "1"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_x_count1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "count_y": "2"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_y_count2"
+      }
+    },
+    {
+      "when": {
+        "count_x": "2"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_x_count2"
+      }
+    },
+    {
+      "when": {
+        "count_z": "2"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_x_count2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "count_y": "3"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_y_count3"
+      }
+    },
+    {
+      "when": {
+        "count_x": "3"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_x_count3"
+      }
+    },
+    {
+      "when": {
+        "count_z": "3"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_x_count3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "count_y": "4"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_y_count4"
+      }
+    },
+    {
+      "when": {
+        "count_x": "4"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_x_count4"
+      }
+    },
+    {
+      "when": {
+        "count_z": "4"
+      },
+      "apply": {
+        "model": "shelfmod:block/iron_scaffold_pole_x_count4",
+        "y": 90
+      }
     }
-  }
+  ]
 }

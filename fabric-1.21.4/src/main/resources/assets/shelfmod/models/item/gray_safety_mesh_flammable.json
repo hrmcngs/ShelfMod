@@ -1,3 +1,6 @@
 {
-  "parent": "shelfmod:block/gray_safety_mesh_flammable"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "shelfmod:block/gray_safety_mesh"
+  }
 }

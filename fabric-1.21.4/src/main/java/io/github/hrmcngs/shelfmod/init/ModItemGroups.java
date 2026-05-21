@@ -23,10 +23,14 @@ public final class ModItemGroups {
                         .icon(() -> new ItemStack(ModItems.BAMBOO_SCAFFOLD_ITEM))
                         .entries((displayContext, entries) -> {
                             entries.add(ModItems.BAMBOO_SCAFFOLD_ITEM);
+                            entries.add(ModItems.KAO_BAMBOO_SCAFFOLD_ITEM);
+                            entries.add(ModItems.BAMBOO_BRACE_ITEM);
                             entries.add(ModItems.IRON_SCAFFOLD_ITEM);
                             for (MeshColor c : MeshColor.values()) {
                                 entries.add(ModItems.SAFETY_MESH_ITEM.get(c));
                                 entries.add(ModItems.SAFETY_MESH_FLAMMABLE_ITEM.get(c));
+                                entries.add(ModItems.SAFETY_MESH_HEATPROOF_ITEM.get(c));
+                                entries.add(ModItems.SAFETY_MESH_FLAMMABLE_HEATPROOF_ITEM.get(c));
                             }
                         })
                         .build());

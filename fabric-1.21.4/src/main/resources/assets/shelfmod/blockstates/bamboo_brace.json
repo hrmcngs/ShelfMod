@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "axis=ne_sw": {
+      "model": "shelfmod:block/bamboo_brace"
+    },
+    "axis=nw_se": {
+      "model": "shelfmod:block/bamboo_brace",
+      "y": 90
+    }
+  }
+}

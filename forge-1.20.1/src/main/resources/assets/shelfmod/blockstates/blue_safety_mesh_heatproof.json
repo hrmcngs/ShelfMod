@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "shelfmod:block/blue_mesh_panel_heatproof"
+    },
+    "facing=east": {
+      "model": "shelfmod:block/blue_mesh_panel_heatproof",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "shelfmod:block/blue_mesh_panel_heatproof",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "shelfmod:block/blue_mesh_panel_heatproof",
+      "y": 270
+    }
+  }
+}

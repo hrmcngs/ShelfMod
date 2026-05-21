@@ -1,0 +1,112 @@
+# Dependabot config for ShelfMod
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+
+updates:
+  # ---------------------------------------------------------------------------
+  # Forge 1.20.1
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "gradle"
+    directory: "/forge-1.20.1"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "loader:forge"
+    commit-message:
+      prefix: "forge"
+      include: "scope"
+    groups:
+      # Bundle Minecraft platform bumps so a single PR carries the matched set.
+      forge-platform:
+        patterns:
+          - "net.minecraftforge:*"
+      # Everything else (libs, parchment, etc.) goes into one weekly PR.
+      forge-misc:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "net.minecraftforge:*"
+
+  # ---------------------------------------------------------------------------
+  # NeoForge 1.21.4
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "gradle"
+    directory: "/neoforge-1.21.4"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "loader:neoforge"
+    commit-message:
+      prefix: "neoforge"
+      include: "scope"
+    groups:
+      neoforge-platform:
+        patterns:
+          - "net.neoforged:*"
+          - "net.neoforged.moddev*"
+      neoforge-misc:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "net.neoforged:*"
+          - "net.neoforged.moddev*"
+
+  # ---------------------------------------------------------------------------
+  # Fabric 1.21.4
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "gradle"
+    directory: "/fabric-1.21.4"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "loader:fabric"
+    commit-message:
+      prefix: "fabric"
+      include: "scope"
+    groups:
+      fabric-platform:
+        patterns:
+          - "net.fabricmc:*"
+          - "net.fabricmc.fabric-api:*"
+      fabric-misc:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "net.fabricmc:*"
+          - "net.fabricmc.fabric-api:*"
+
+  # ---------------------------------------------------------------------------
+  # GitHub Actions (no workflows yet, but kept so PRs flow once they're added)
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns:
+          - "*"

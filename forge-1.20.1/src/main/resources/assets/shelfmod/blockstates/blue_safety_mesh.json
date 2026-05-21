@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
-      "model": "shelfmod:block/blue_safety_mesh"
+    "facing=north": {
+      "model": "shelfmod:block/blue_mesh_panel"
+    },
+    "facing=east": {
+      "model": "shelfmod:block/blue_mesh_panel",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "shelfmod:block/blue_mesh_panel",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "shelfmod:block/blue_mesh_panel",
+      "y": 270
     }
   }
 }

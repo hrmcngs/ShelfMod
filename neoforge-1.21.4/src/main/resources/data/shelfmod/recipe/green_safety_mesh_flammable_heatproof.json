@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "shelfmod:green_safety_mesh_flammable",
+    "minecraft:iron_ingot"
+  ],
+  "result": {
+    "id": "shelfmod:green_safety_mesh_flammable_heatproof",
+    "count": 1
+  }
+}

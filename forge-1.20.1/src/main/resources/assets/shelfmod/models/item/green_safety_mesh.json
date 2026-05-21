@@ -1,3 +1,6 @@
 {
-  "parent": "shelfmod:block/green_safety_mesh"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "shelfmod:block/green_safety_mesh"
+  }
 }

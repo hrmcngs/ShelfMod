@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "shelfmod:block/kao_bamboo_scaffold_side"
+  }
+}

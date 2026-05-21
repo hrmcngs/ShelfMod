@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "shelfmod:block/blue_safety_mesh_heatproof"
+  }
+}

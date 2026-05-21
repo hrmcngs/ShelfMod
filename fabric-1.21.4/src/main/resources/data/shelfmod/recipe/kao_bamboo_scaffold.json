@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BSB",
+    "SBS",
+    "BSB"
+  ],
+  "key": {
+    "B": "minecraft:bamboo",
+    "S": "minecraft:string"
+  },
+  "result": {
+    "id": "shelfmod:kao_bamboo_scaffold",
+    "count": 8
+  }
+}

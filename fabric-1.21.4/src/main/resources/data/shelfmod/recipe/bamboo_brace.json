@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "shelfmod:kao_bamboo_scaffold",
+    "shelfmod:kao_bamboo_scaffold",
+    "minecraft:string"
+  ],
+  "result": {
+    "id": "shelfmod:bamboo_brace",
+    "count": 2
+  }
+}

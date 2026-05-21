@@ -18,10 +18,14 @@ public final class ModCreativeTabs {
                     .icon(() -> new ItemStack(ModItems.BAMBOO_SCAFFOLD.get()))
                     .displayItems((params, output) -> {
                         output.accept(ModItems.BAMBOO_SCAFFOLD.get());
+                        output.accept(ModItems.KAO_BAMBOO_SCAFFOLD.get());
+                        output.accept(ModItems.BAMBOO_BRACE.get());
                         output.accept(ModItems.IRON_SCAFFOLD.get());
                         for (MeshColor c : MeshColor.values()) {
                             output.accept(ModItems.SAFETY_MESH.get(c).get());
                             output.accept(ModItems.SAFETY_MESH_FLAMMABLE.get(c).get());
+                            output.accept(ModItems.SAFETY_MESH_HEATPROOF.get(c).get());
+                            output.accept(ModItems.SAFETY_MESH_FLAMMABLE_HEATPROOF.get(c).get());
                         }
                     })
                     .build());

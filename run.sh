@@ -2,12 +2,20 @@
 # ShelfMod: launch the in-dev Minecraft client (or server) with the mod loaded.
 #
 # Usage:
-#   ./run.sh <loader> [client|server]   loader = forge | neoforge | fabric
-#   ./run.sh forge                       # client (default)
-#   ./run.sh neoforge server             # dedicated server
+#   ./run.sh <loader> [client|server] [flags]
+#   ./run.sh forge                          # client (default)
+#   ./run.sh neoforge server                # dedicated server
+#   ./run.sh forge --offline                # client, no network access
+#   ./run.sh fabric server -o               # server, offline
 #
-# First invocation downloads Minecraft assets + decompiled sources — slow.
-# Subsequent runs are fast (everything is cached in the loader's working dir).
+# First invocation downloads Minecraft assets + decompiled sources — slow,
+# and requires network. Subsequent runs cache everything in <loader>/run/ and
+# ~/.gradle/caches/, so --offline works after one successful online launch.
+#
+# Flags:
+#   -o, --offline    pass --offline to gradle (no network)
+#   -v, --verbose    show full gradle output (verbose)
+#   -h, --help       show this help
 #
 # JDK requirements match build.sh:
 #   forge-1.20.1     : Java 17
@@ -18,21 +26,32 @@ set -eo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-target="${1-}"
-mode="${2:-client}"
+target=""
+mode="client"
+OFFLINE=0
+VERBOSE=0
 
-case "$target" in
-  forge|neoforge|fabric) ;;
-  ""|-h|--help)
-    sed -n '2,16p' "$0"; exit 0 ;;
-  *)
-    echo "unknown loader: $target"; exit 2 ;;
-esac
+for arg in "$@"; do
+  case "$arg" in
+    -o|--offline) OFFLINE=1 ;;
+    -v|--verbose) VERBOSE=1 ;;
+    -h|--help)    sed -n '2,22p' "$0"; exit 0 ;;
+    client|server) mode="$arg" ;;
+    forge|neoforge|fabric)
+      if [ -n "$target" ]; then
+        echo "loader already set to '$target' (got '$arg')"; exit 2
+      fi
+      target="$arg"
+      ;;
+    -*) echo "unknown flag: $arg"; exit 2 ;;
+    *)  echo "unknown argument: $arg"; exit 2 ;;
+  esac
+done
 
-case "$mode" in
-  client|server) ;;
-  *) echo "mode must be client or server (got: $mode)"; exit 2 ;;
-esac
+if [ -z "$target" ]; then
+  echo "usage: $0 <forge|neoforge|fabric> [client|server] [--offline] [--verbose]"
+  exit 2
+fi
 
 dir_for() {
   case "$1" in
@@ -82,6 +101,15 @@ esac
 task="runClient"
 [ "$mode" = "server" ] && task="runServer"
 
-echo "[$target/$mode] launching with JDK $req at $jdk"
+gradle_args="--no-daemon"
+[ "$OFFLINE" = "1" ] && gradle_args="$gradle_args --offline"
+[ "$VERBOSE" = "1" ] && gradle_args="$gradle_args --info"
+
+flags=""
+[ "$OFFLINE" = "1" ] && flags="${flags:+$flags }offline"
+[ "$VERBOSE" = "1" ] && flags="${flags:+$flags }verbose"
+[ -n "$flags" ] && flags=" [$flags]"
+
+echo "[$target/$mode]$flags launching with JDK $req at $jdk"
 cd "$ROOT/$dir"
-JAVA_HOME="$jdk" PATH="$jdk/bin:$PATH" exec ./gradlew --no-daemon "$task"
+JAVA_HOME="$jdk" PATH="$jdk/bin:$PATH" exec ./gradlew $gradle_args "$task"

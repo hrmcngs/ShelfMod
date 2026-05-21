@@ -1,3 +1,6 @@
 {
-  "parent": "shelfmod:block/iron_scaffold_stable"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "shelfmod:block/iron_scaffold_side"
+  }
 }

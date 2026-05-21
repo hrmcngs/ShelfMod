@@ -8,9 +8,18 @@
 .PARAMETER Mode
   client (default) | server
 
+.PARAMETER Offline
+  Pass --offline to gradle (no network).
+  Requires at least one prior online launch so assets/dependencies are cached.
+
+.PARAMETER VerboseOutput
+  Pass --info to gradle for verbose output.
+
 .EXAMPLE
   .\run.ps1 forge
   .\run.ps1 neoforge server
+  .\run.ps1 forge -Offline
+  .\run.ps1 fabric server -o
 #>
 [CmdletBinding()]
 param(
@@ -20,7 +29,13 @@ param(
 
   [Parameter(Position=1)]
   [ValidateSet('client','server')]
-  [string]$Mode = 'client'
+  [string]$Mode = 'client',
+
+  [Alias('o')]
+  [switch]$Offline,
+
+  [Alias('v')]
+  [switch]$VerboseOutput
 )
 
 $ErrorActionPreference = 'Stop'
@@ -71,12 +86,21 @@ if (-not $jdk) {
 
 $task = if ($Mode -eq 'server') { 'runServer' } else { 'runClient' }
 
-Write-Host "[$Loader/$Mode] launching with JDK $req at $jdk"
+$gradleArgs = @('--no-daemon')
+if ($Offline)       { $gradleArgs += '--offline' }
+if ($VerboseOutput) { $gradleArgs += '--info' }
+
+$flagLabels = @()
+if ($Offline)       { $flagLabels += 'offline' }
+if ($VerboseOutput) { $flagLabels += 'verbose' }
+$flagsTxt = if ($flagLabels.Count -gt 0) { " [$($flagLabels -join ' ')]" } else { '' }
+
+Write-Host "[$Loader/$Mode]$flagsTxt launching with JDK $req at $jdk"
 $env:JAVA_HOME = $jdk
 $env:Path = (Join-Path $jdk 'bin') + ';' + $env:Path
 
 Push-Location (Join-Path $Root $dir)
 try {
-  & .\gradlew.bat --no-daemon $task
+  & .\gradlew.bat @gradleArgs $task
   exit $LASTEXITCODE
 } finally { Pop-Location }

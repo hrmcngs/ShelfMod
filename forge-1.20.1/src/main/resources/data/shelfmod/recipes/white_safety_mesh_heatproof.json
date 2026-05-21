@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "shelfmod:white_safety_mesh"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "result": {
+    "item": "shelfmod:white_safety_mesh_heatproof",
+    "count": 1
+  }
+}

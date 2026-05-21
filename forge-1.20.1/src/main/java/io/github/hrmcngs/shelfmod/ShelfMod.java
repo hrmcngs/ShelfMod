@@ -33,10 +33,14 @@ public class ShelfMod {
 
     private void clientSetup(final FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.BAMBOO_SCAFFOLD.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.KAO_BAMBOO_SCAFFOLD.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.BAMBOO_BRACE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.IRON_SCAFFOLD.get(), RenderType.cutout());
         for (MeshColor c : MeshColor.values()) {
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.SAFETY_MESH.get(c).get(), RenderType.cutoutMipped());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.SAFETY_MESH_FLAMMABLE.get(c).get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.SAFETY_MESH_HEATPROOF.get(c).get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.SAFETY_MESH_FLAMMABLE_HEATPROOF.get(c).get(), RenderType.cutoutMipped());
         }
     }
 }
