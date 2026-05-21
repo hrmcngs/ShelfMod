@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": ["${mod_authors}"],
+  "license": "${mod_license}",
+  "environment": "*",
+  "entrypoints": {
+    "main":   [ "io.github.hrmcngs.shelfmod.ShelfMod" ],
+    "client": [ "io.github.hrmcngs.shelfmod.client.ShelfModClient" ]
+  },
+  "depends": {
+    "fabricloader":  ">=${loader_version}",
+    "minecraft":     "${minecraft_version}",
+    "java":          ">=21",
+    "fabric-api":    "*"
+  }
+}

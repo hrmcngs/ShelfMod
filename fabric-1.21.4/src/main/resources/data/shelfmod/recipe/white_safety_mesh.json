@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SGS",
+    "GMG",
+    "SGS"
+  ],
+  "key": {
+    "S": "minecraft:string",
+    "G": "minecraft:white_dye",
+    "M": "minecraft:magma_cream"
+  },
+  "result": {
+    "id": "shelfmod:white_safety_mesh",
+    "count": 4
+  }
+}

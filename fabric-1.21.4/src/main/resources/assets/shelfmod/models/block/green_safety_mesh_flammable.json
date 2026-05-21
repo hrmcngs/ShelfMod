@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "shelfmod:block/green_safety_mesh"
+  },
+  "render_type": "minecraft:cutout_mipped"
+}

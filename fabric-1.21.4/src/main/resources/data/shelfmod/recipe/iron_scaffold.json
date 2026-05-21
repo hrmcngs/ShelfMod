@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "I S",
+    "ISI",
+    "I I"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:string"
+  },
+  "result": {
+    "id": "shelfmod:iron_scaffold",
+    "count": 6
+  }
+}

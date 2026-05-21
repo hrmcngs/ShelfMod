@@ -1,0 +1,17 @@
+{
+  "itemGroup.shelfmod.shelf_tab": "ShelfMod",
+  "block.shelfmod.bamboo_scaffold": "Bamboo Scaffold",
+  "block.shelfmod.iron_scaffold": "Iron Scaffold",
+  "block.shelfmod.green_safety_mesh": "Green Safety Mesh (Flame-resistant)",
+  "block.shelfmod.green_safety_mesh_flammable": "Green Safety Mesh (Flammable)",
+  "block.shelfmod.black_safety_mesh": "Black Safety Mesh (Flame-resistant)",
+  "block.shelfmod.black_safety_mesh_flammable": "Black Safety Mesh (Flammable)",
+  "block.shelfmod.white_safety_mesh": "White Safety Mesh (Flame-resistant)",
+  "block.shelfmod.white_safety_mesh_flammable": "White Safety Mesh (Flammable)",
+  "block.shelfmod.blue_safety_mesh": "Blue Safety Mesh (Flame-resistant)",
+  "block.shelfmod.blue_safety_mesh_flammable": "Blue Safety Mesh (Flammable)",
+  "block.shelfmod.silver_safety_mesh": "Silver Safety Mesh (Flame-resistant)",
+  "block.shelfmod.silver_safety_mesh_flammable": "Silver Safety Mesh (Flammable)",
+  "block.shelfmod.gray_safety_mesh": "Gray Safety Mesh (Flame-resistant)",
+  "block.shelfmod.gray_safety_mesh_flammable": "Gray Safety Mesh (Flammable)"
+}

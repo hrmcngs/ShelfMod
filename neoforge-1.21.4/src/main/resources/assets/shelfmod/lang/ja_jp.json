@@ -1,0 +1,17 @@
+{
+  "itemGroup.shelfmod.shelf_tab": "ShelfMod",
+  "block.shelfmod.bamboo_scaffold": "竹の搭棚",
+  "block.shelfmod.iron_scaffold": "鉄の搭棚",
+  "block.shelfmod.green_safety_mesh": "緑色の養生ネット(防燃)",
+  "block.shelfmod.green_safety_mesh_flammable": "緑色の養生ネット(可燃)",
+  "block.shelfmod.black_safety_mesh": "黒色の養生ネット(防燃)",
+  "block.shelfmod.black_safety_mesh_flammable": "黒色の養生ネット(可燃)",
+  "block.shelfmod.white_safety_mesh": "白色の養生ネット(防燃)",
+  "block.shelfmod.white_safety_mesh_flammable": "白色の養生ネット(可燃)",
+  "block.shelfmod.blue_safety_mesh": "青色の養生ネット(防燃)",
+  "block.shelfmod.blue_safety_mesh_flammable": "青色の養生ネット(可燃)",
+  "block.shelfmod.silver_safety_mesh": "シルバーの養生ネット(防燃)",
+  "block.shelfmod.silver_safety_mesh_flammable": "シルバーの養生ネット(可燃)",
+  "block.shelfmod.gray_safety_mesh": "グレーの養生ネット(防燃)",
+  "block.shelfmod.gray_safety_mesh_flammable": "グレーの養生ネット(可燃)"
+}

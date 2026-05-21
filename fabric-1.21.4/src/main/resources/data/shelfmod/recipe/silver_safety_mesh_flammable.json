@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SGS",
+    "GSG",
+    "SGS"
+  ],
+  "key": {
+    "S": "minecraft:string",
+    "G": "minecraft:light_gray_dye"
+  },
+  "result": {
+    "id": "shelfmod:silver_safety_mesh_flammable",
+    "count": 4
+  }
+}
