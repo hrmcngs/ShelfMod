@@ -99,7 +99,24 @@ public class BraceScaffoldBlock extends Block implements SimpleWaterloggedBlock 
             BlockState ns = level.getBlockState(n);
             if (ns.getBlock() instanceof PoleScaffoldBlock) return true;
             if (ns.getBlock() instanceof BraceScaffoldBlock) return true;
-            if (ns.isFaceSturdy(level, n, d.getOpposite())) return true;
+            if (!ns.getCollisionShape(level, n).isEmpty()) return true;
+        }
+        // Long-reach: a pole within BRACE_RANGE cells anchors the brace so it can
+        // sit mid-gap and bridge two pole supports (Pole → Brace handshake range = 3).
+        return scanForPole(level, pos);
+    }
+
+    private static final int BRACE_RANGE = 3;
+
+    private static boolean scanForPole(LevelReader level, BlockPos pos) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (Direction d : Direction.values()) {
+            for (int i = 1; i <= BRACE_RANGE; i++) {
+                cursor.set(pos.getX() + d.getStepX() * i,
+                        pos.getY() + d.getStepY() * i,
+                        pos.getZ() + d.getStepZ() * i);
+                if (level.getBlockState(cursor).getBlock() instanceof PoleScaffoldBlock) return true;
+            }
         }
         return false;
     }

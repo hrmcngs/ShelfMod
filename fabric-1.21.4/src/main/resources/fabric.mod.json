@@ -11,6 +11,9 @@
     "main":   [ "io.github.hrmcngs.shelfmod.ShelfMod" ],
     "client": [ "io.github.hrmcngs.shelfmod.client.ShelfModClient" ]
   },
+  "mixins": [
+    "shelfmod.mixins.json"
+  ],
   "depends": {
     "fabricloader":  ">=${loader_version}",
     "minecraft":     "${minecraft_version}",

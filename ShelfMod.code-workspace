@@ -1,0 +1,44 @@
+{
+  "folders": [
+    {
+      "name": "📦 ShelfMod (root)",
+      "path": "."
+    },
+    {
+      "name": "🟫 Forge 1.20.1",
+      "path": "forge-1.20.1"
+    },
+    {
+      "name": "⬢ NeoForge 1.21.4",
+      "path": "neoforge-1.21.4"
+    },
+    {
+      "name": "🧵 Fabric 1.21.4",
+      "path": "fabric-1.21.4"
+    }
+  ],
+  "settings": {
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.import.gradle.enabled": true,
+    "java.import.gradle.wrapper.enabled": true,
+    "java.errors.incompleteClasspath.severity": "ignore",
+    "java.compile.nullAnalysis.mode": "disabled",
+    "files.exclude": {
+      "**/.gradle": true,
+      "**/build": true,
+      "**/.eclipse": true
+    },
+    "search.exclude": {
+      "**/build": true,
+      "**/.gradle": true,
+      "**/run": true,
+      "**/dist": false
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "vscjava.vscode-java-pack",
+      "vscjava.vscode-gradle"
+    ]
+  }
+}

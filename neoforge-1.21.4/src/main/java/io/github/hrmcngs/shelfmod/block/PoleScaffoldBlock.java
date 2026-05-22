@@ -35,7 +35,6 @@ public class PoleScaffoldBlock extends Block implements SimpleWaterloggedBlock {
 
     private static final int STABILITY_DELAY = 40;
     private static final int NEIGHBOR_DELAY = 4;
-    private static final int CHAIN_MAX = 64;
 
     private static final double[][] CENTRES_Y = {
             {}, {8, 8}, {4, 8, 12, 8}, {3, 8, 8, 8, 13, 8}, {4, 4, 12, 4, 4, 12, 12, 12},
@@ -98,9 +97,10 @@ public class PoleScaffoldBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext ctx) {
-        if (ctx.isSecondaryUseActive()) return false;
+        // Shift + right-click cycles count 1→2→3→4→1; plain right-click places adjacent.
+        if (!ctx.isSecondaryUseActive()) return false;
         if (!ctx.getItemInHand().is(this.asItem())) return false;
-        return state.getValue(countProp(ctx.getClickedFace().getAxis())) < 4;
+        return true;
     }
 
     @Override
@@ -110,7 +110,8 @@ public class PoleScaffoldBlock extends Block implements SimpleWaterloggedBlock {
         Direction.Axis axis = ctx.getClickedFace().getAxis();
         if (existing.is(this)) {
             IntegerProperty prop = countProp(axis);
-            return existing.setValue(prop, Math.min(4, existing.getValue(prop) + 1));
+            int current = existing.getValue(prop);
+            return existing.setValue(prop, current >= 4 ? 1 : current + 1);
         }
         FluidState fluid = ctx.getLevel().getFluidState(ctx.getClickedPos());
         return defaultBlockState()
@@ -159,27 +160,30 @@ public class PoleScaffoldBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     private boolean isStable(BlockState state, LevelReader level, BlockPos pos) {
-        if (state.getValue(COUNT_Y) > 0 && chainEnd(level, pos, Direction.Axis.Y, Direction.DOWN)) return true;
-        if (state.getValue(COUNT_X) > 0
-                && chainEnd(level, pos, Direction.Axis.X, Direction.EAST)
-                && chainEnd(level, pos, Direction.Axis.X, Direction.WEST)) return true;
-        if (state.getValue(COUNT_Z) > 0
-                && chainEnd(level, pos, Direction.Axis.Z, Direction.SOUTH)
-                && chainEnd(level, pos, Direction.Axis.Z, Direction.NORTH)) return true;
-        return false;
+        for (Direction d : Direction.values()) {
+            BlockPos n = pos.relative(d);
+            BlockState ns = level.getBlockState(n);
+            if (ns.getBlock() instanceof PoleScaffoldBlock) return true;
+            if (ns.getBlock() instanceof BraceScaffoldBlock) return true;
+            if (!ns.getCollisionShape(level, n).isEmpty()) return true;
+        }
+        // Brace acts as a long-reach anchor: scan up to BRACE_RANGE cells along each
+        // cardinal direction and treat a brace as support, so a brace placed in a gap
+        // between two pole supports keeps both standing.
+        return scanForBrace(level, pos);
     }
 
-    private boolean chainEnd(LevelReader level, BlockPos pos, Direction.Axis axis, Direction step) {
-        BlockPos walker = pos;
-        IntegerProperty prop = countProp(axis);
-        for (int i = 0; i < CHAIN_MAX; i++) {
-            BlockPos next = walker.relative(step);
-            BlockState ns = level.getBlockState(next);
-            if (ns.getBlock() instanceof PoleScaffoldBlock && ns.getValue(prop) > 0) {
-                walker = next;
-                continue;
+    private static final int BRACE_RANGE = 3;
+
+    static boolean scanForBrace(LevelReader level, BlockPos pos) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (Direction d : Direction.values()) {
+            for (int i = 1; i <= BRACE_RANGE; i++) {
+                cursor.set(pos.getX() + d.getStepX() * i,
+                        pos.getY() + d.getStepY() * i,
+                        pos.getZ() + d.getStepZ() * i);
+                if (level.getBlockState(cursor).getBlock() instanceof BraceScaffoldBlock) return true;
             }
-            return ns.isFaceSturdy(level, next, step.getOpposite());
         }
         return false;
     }

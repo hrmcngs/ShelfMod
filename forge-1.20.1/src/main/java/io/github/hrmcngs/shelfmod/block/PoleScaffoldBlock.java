@@ -25,7 +25,10 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 /**
  * Multi-pole scaffolding block.
@@ -47,7 +50,6 @@ public class PoleScaffoldBlock extends Block implements SimpleWaterloggedBlock {
 
     private static final int STABILITY_DELAY = 40;
     private static final int NEIGHBOR_DELAY = 4;
-    private static final int CHAIN_MAX = 64;
 
     // Slot centres in 0..16 voxel space. Each entry is [(cx0,cz0), (cx1,cz1), ...].
     // Y-axis slots: vary cx/cz in the X-Z plane.
@@ -157,10 +159,10 @@ public class PoleScaffoldBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext ctx) {
-        if (ctx.isSecondaryUseActive()) return false;
+        // Shift + right-click cycles count 1→2→3→4→1; plain right-click places adjacent.
+        if (!ctx.isSecondaryUseActive()) return false;
         if (!ctx.getItemInHand().is(this.asItem())) return false;
-        Direction.Axis axis = ctx.getClickedFace().getAxis();
-        return state.getValue(countProp(axis)) < 4;
+        return true;
     }
 
     @Override
@@ -170,7 +172,8 @@ public class PoleScaffoldBlock extends Block implements SimpleWaterloggedBlock {
         Direction.Axis axis = ctx.getClickedFace().getAxis();
         if (existing.is(this)) {
             IntegerProperty prop = countProp(axis);
-            int next = Math.min(4, existing.getValue(prop) + 1);
+            int current = existing.getValue(prop);
+            int next = current >= 4 ? 1 : current + 1;
             return existing.setValue(prop, next);
         }
         FluidState fluid = ctx.getLevel().getFluidState(ctx.getClickedPos());
@@ -232,45 +235,39 @@ public class PoleScaffoldBlock extends Block implements SimpleWaterloggedBlock {
         }
     }
 
+    /**
+     * Lenient stability: any of the 6 cardinal neighbours is a scaffold block or has a
+     * non-empty collision shape → stable. Prevents the falling-block flicker that occurred
+     * with the previous chain-walk rule (block re-falling on every landing) and matches
+     * the user's request: "ブロックが下にあれば、または隣接していれば落ちない".
+     */
     private boolean isStable(BlockState state, LevelReader level, BlockPos pos) {
-        if (state.getValue(COUNT_Y) > 0 && verticalSupported(level, pos)) return true;
-        if (state.getValue(COUNT_X) > 0 && horizontalSupported(level, pos, Direction.Axis.X)) return true;
-        if (state.getValue(COUNT_Z) > 0 && horizontalSupported(level, pos, Direction.Axis.Z)) return true;
-        return false;
+        for (Direction d : Direction.values()) {
+            BlockPos n = pos.relative(d);
+            BlockState ns = level.getBlockState(n);
+            if (ns.getBlock() instanceof PoleScaffoldBlock) return true;
+            if (ns.getBlock() instanceof BraceScaffoldBlock) return true;
+            if (!ns.getCollisionShape(level, n).isEmpty()) return true;
+        }
+        // Brace acts as a long-reach anchor: scan up to BRACE_RANGE cells along each
+        // cardinal direction and treat a brace as support, so a brace placed in a gap
+        // between two pole supports keeps both standing.
+        return scanForBrace(level, pos);
     }
 
-    private boolean verticalSupported(LevelReader level, BlockPos pos) {
-        return chainEndIsSupported(level, pos, Direction.Axis.Y, Direction.DOWN);
-    }
+    private static final int BRACE_RANGE = 3;
 
-    private boolean horizontalSupported(LevelReader level, BlockPos pos, Direction.Axis axis) {
-        Direction posDir = axisDirection(axis, true);
-        return chainEndIsSupported(level, pos, axis, posDir)
-                && chainEndIsSupported(level, pos, axis, posDir.getOpposite());
-    }
-
-    private boolean chainEndIsSupported(LevelReader level, BlockPos pos,
-                                        Direction.Axis axis, Direction step) {
-        BlockPos walker = pos;
-        IntegerProperty prop = countProp(axis);
-        for (int i = 0; i < CHAIN_MAX; i++) {
-            BlockPos next = walker.relative(step);
-            BlockState ns = level.getBlockState(next);
-            if (ns.getBlock() instanceof PoleScaffoldBlock && ns.getValue(prop) > 0) {
-                walker = next;
-                continue;
+    static boolean scanForBrace(LevelReader level, BlockPos pos) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (Direction d : Direction.values()) {
+            for (int i = 1; i <= BRACE_RANGE; i++) {
+                cursor.set(pos.getX() + d.getStepX() * i,
+                        pos.getY() + d.getStepY() * i,
+                        pos.getZ() + d.getStepZ() * i);
+                if (level.getBlockState(cursor).getBlock() instanceof BraceScaffoldBlock) return true;
             }
-            return ns.isFaceSturdy(level, next, step.getOpposite());
         }
         return false;
-    }
-
-    private static Direction axisDirection(Direction.Axis axis, boolean positive) {
-        return switch (axis) {
-            case X -> positive ? Direction.EAST : Direction.WEST;
-            case Z -> positive ? Direction.SOUTH : Direction.NORTH;
-            default -> positive ? Direction.UP : Direction.DOWN;
-        };
     }
 
     @Override
@@ -291,5 +288,10 @@ public class PoleScaffoldBlock extends Block implements SimpleWaterloggedBlock {
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public void initializeClient(Consumer<IClientBlockExtensions> consumer) {
+        consumer.accept(io.github.hrmcngs.shelfmod.client.PoleScaffoldClientFx.INSTANCE);
     }
 }

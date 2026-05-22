@@ -35,7 +35,6 @@ public class PoleScaffoldBlock extends Block implements Waterloggable {
 
     private static final int STABILITY_DELAY = 40;
     private static final int NEIGHBOR_DELAY = 4;
-    private static final int CHAIN_MAX = 64;
 
     private static final double[][] CENTRES_Y = {
             {}, {8, 8}, {4, 8, 12, 8}, {3, 8, 8, 8, 13, 8}, {4, 4, 12, 4, 4, 12, 12, 12},
@@ -98,9 +97,10 @@ public class PoleScaffoldBlock extends Block implements Waterloggable {
 
     @Override
     public boolean canReplace(BlockState state, ItemPlacementContext ctx) {
-        if (ctx.shouldCancelInteraction()) return false;
+        // Shift + right-click cycles count 1→2→3→4→1; plain right-click places adjacent.
+        if (!ctx.shouldCancelInteraction()) return false;
         if (!ctx.getStack().isOf(this.asItem())) return false;
-        return state.get(countProp(ctx.getSide().getAxis())) < 4;
+        return true;
     }
 
     @Override
@@ -110,7 +110,8 @@ public class PoleScaffoldBlock extends Block implements Waterloggable {
         Direction.Axis axis = ctx.getSide().getAxis();
         if (existing.isOf(this)) {
             IntProperty prop = countProp(axis);
-            return existing.with(prop, Math.min(4, existing.get(prop) + 1));
+            int current = existing.get(prop);
+            return existing.with(prop, current >= 4 ? 1 : current + 1);
         }
         FluidState fluid = ctx.getWorld().getFluidState(ctx.getBlockPos());
         return getDefaultState()
@@ -159,27 +160,30 @@ public class PoleScaffoldBlock extends Block implements Waterloggable {
     }
 
     private boolean isStable(BlockState state, WorldView world, BlockPos pos) {
-        if (state.get(COUNT_Y) > 0 && chainEnd(world, pos, Direction.Axis.Y, Direction.DOWN)) return true;
-        if (state.get(COUNT_X) > 0
-                && chainEnd(world, pos, Direction.Axis.X, Direction.EAST)
-                && chainEnd(world, pos, Direction.Axis.X, Direction.WEST)) return true;
-        if (state.get(COUNT_Z) > 0
-                && chainEnd(world, pos, Direction.Axis.Z, Direction.SOUTH)
-                && chainEnd(world, pos, Direction.Axis.Z, Direction.NORTH)) return true;
-        return false;
+        for (Direction d : Direction.values()) {
+            BlockPos n = pos.offset(d);
+            BlockState ns = world.getBlockState(n);
+            if (ns.getBlock() instanceof PoleScaffoldBlock) return true;
+            if (ns.getBlock() instanceof BraceScaffoldBlock) return true;
+            if (!ns.getCollisionShape(world, n).isEmpty()) return true;
+        }
+        // Brace acts as a long-reach anchor: scan up to BRACE_RANGE cells along each
+        // cardinal direction and treat a brace as support, so a brace placed in a gap
+        // between two pole supports keeps both standing.
+        return scanForBrace(world, pos);
     }
 
-    private boolean chainEnd(WorldView world, BlockPos pos, Direction.Axis axis, Direction step) {
-        BlockPos walker = pos;
-        IntProperty prop = countProp(axis);
-        for (int i = 0; i < CHAIN_MAX; i++) {
-            BlockPos next = walker.offset(step);
-            BlockState ns = world.getBlockState(next);
-            if (ns.getBlock() instanceof PoleScaffoldBlock && ns.get(prop) > 0) {
-                walker = next;
-                continue;
+    private static final int BRACE_RANGE = 3;
+
+    static boolean scanForBrace(WorldView world, BlockPos pos) {
+        BlockPos.Mutable cursor = new BlockPos.Mutable();
+        for (Direction d : Direction.values()) {
+            for (int i = 1; i <= BRACE_RANGE; i++) {
+                cursor.set(pos.getX() + d.getOffsetX() * i,
+                        pos.getY() + d.getOffsetY() * i,
+                        pos.getZ() + d.getOffsetZ() * i);
+                if (world.getBlockState(cursor).getBlock() instanceof BraceScaffoldBlock) return true;
             }
-            return ns.isSideSolidFullSquare(world, next, step.getOpposite());
         }
         return false;
     }

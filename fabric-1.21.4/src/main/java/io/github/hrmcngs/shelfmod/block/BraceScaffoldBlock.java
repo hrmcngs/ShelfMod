@@ -101,7 +101,24 @@ public class BraceScaffoldBlock extends Block implements Waterloggable {
             BlockState ns = world.getBlockState(n);
             if (ns.getBlock() instanceof PoleScaffoldBlock) return true;
             if (ns.getBlock() instanceof BraceScaffoldBlock) return true;
-            if (ns.isSideSolidFullSquare(world, n, d.getOpposite())) return true;
+            if (!ns.getCollisionShape(world, n).isEmpty()) return true;
+        }
+        // Long-reach: a pole within BRACE_RANGE cells anchors the brace so it can
+        // sit mid-gap and bridge two pole supports (Pole → Brace handshake range = 3).
+        return scanForPole(world, pos);
+    }
+
+    private static final int BRACE_RANGE = 3;
+
+    private static boolean scanForPole(WorldView world, BlockPos pos) {
+        BlockPos.Mutable cursor = new BlockPos.Mutable();
+        for (Direction d : Direction.values()) {
+            for (int i = 1; i <= BRACE_RANGE; i++) {
+                cursor.set(pos.getX() + d.getOffsetX() * i,
+                        pos.getY() + d.getOffsetY() * i,
+                        pos.getZ() + d.getOffsetZ() * i);
+                if (world.getBlockState(cursor).getBlock() instanceof PoleScaffoldBlock) return true;
+            }
         }
         return false;
     }
